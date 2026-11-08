@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --navy: #0b1325;
+  --navy-light: #152238;
+  --accent: #ea580c;
+  --accent-hover: #d94e07;
+  --muted: #64748b;
+  --border: #e2e8f0;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.prose-church h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose-church h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose-church p {
+  color: #334155;
+  line-height: 1.75;
+  margin-bottom: 1.125rem;
+}
+
+.prose-church ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.125rem;
+  color: #334155;
+}
+
+.prose-church blockquote {
+  border-left: 3px solid #ea580c;
+  padding-left: 1rem;
+  font-style: italic;
+  color: #1e293b;
+  margin: 1.25rem 0;
+}
+
