@@ -10,6 +10,7 @@ import { acceptInvitationAction } from "@/features/users/actions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
 
 function AdminLoginFormContent() {
   const router = useRouter();
@@ -37,12 +38,14 @@ function AdminLoginFormContent() {
 
     setLoading(false);
     if (res?.error) {
+      toast.error("Invalid administrator credentials or inactive account.");
       setError(
         "Invalid administrator credentials or inactive account. Please verify your email and password."
       );
       return;
     }
 
+    toast.success("Signed in successfully. Redirecting...");
     router.push(callbackUrl);
     router.refresh();
   }
@@ -60,10 +63,12 @@ function AdminLoginFormContent() {
 
     setLoading(false);
     if (!res.success) {
+      toast.error(res.error || "Failed to activate account.");
       setError(res.error);
       return;
     }
 
+    toast.success("Account activated successfully. Please sign in.");
     setEmail(res.data.email);
     setInviteCompleted(true);
   }

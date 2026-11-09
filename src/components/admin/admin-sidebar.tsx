@@ -21,6 +21,7 @@ import {
   ExternalLink,
   Shield,
 } from "lucide-react";
+import { toast } from "@/components/ui/toast";
 import type { AuthenticatedAdmin } from "@/types";
 
 const CONTENT_ITEMS = [
@@ -182,7 +183,10 @@ export function AdminSidebar({ admin }: AdminSidebarProps) {
           </Link>
           <button
             type="button"
-            onClick={() => signOut({ callbackUrl: "/admin/login" })}
+            onClick={async () => {
+              toast.info("Signing out...");
+              await signOut({ callbackUrl: "/admin/login" });
+            }}
             className="flex-1 inline-flex items-center justify-center gap-1 rounded-sm border border-white/15 px-2.5 py-1.5 text-[11px] font-medium text-slate-300 hover:bg-red-500/20 hover:text-red-200"
           >
             <LogOut className="h-3 w-3" />

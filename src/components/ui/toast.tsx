@@ -17,16 +17,31 @@ type ToastListener = (toasts: ToastItem[]) => void;
 
 let toastsState: ToastItem[] = [];
 const listeners = new Set<ToastListener>();
+const activeTimers = new Map<string, NodeJS.Timeout>();
 
 function notify() {
   const current = [...toastsState];
   listeners.forEach((listener) => listener(current));
 }
 
-export function toast(message: string, options?: { type?: ToastType; title?: string; duration?: number }) {
+export function dismissToast(id: string) {
+  const timer = activeTimers.get(id);
+  if (timer) {
+    clearTimeout(timer);
+    activeTimers.delete(id);
+  }
+  toastsState = toastsState.filter((t) => t.id !== id);
+  notify();
+}
+
+export function toast(
+  message: string,
+  options?: { type?: ToastType; title?: string; duration?: number }
+) {
   const id = Math.random().toString(36).substring(2, 9);
   const type = options?.type ?? "info";
-  const duration = options?.duration ?? 4200;
+  // Default timeout: 3200ms (3.2 seconds) so toasts do not linger
+  const duration = options?.duration ?? 3200;
 
   const item: ToastItem = {
     id,
@@ -36,34 +51,31 @@ export function toast(message: string, options?: { type?: ToastType; title?: str
     duration,
   };
 
-  toastsState = [item, ...toastsState.slice(0, 3)];
+  // Limit stack to latest 3 toasts
+  toastsState = [item, ...toastsState.slice(0, 2)];
   notify();
 
   if (duration > 0) {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       dismissToast(id);
     }, duration);
+    activeTimers.set(id, timer);
   }
 
   return id;
 }
 
-toast.success = (message: string, title?: string) => {
-  return toast(message, { type: "success", title });
+toast.success = (message: string, title?: string, duration?: number) => {
+  return toast(message, { type: "success", title, duration: duration ?? 3000 });
 };
 
-toast.error = (message: string, title?: string) => {
-  return toast(message, { type: "error", title });
+toast.error = (message: string, title?: string, duration?: number) => {
+  return toast(message, { type: "error", title, duration: duration ?? 4000 });
 };
 
-toast.info = (message: string, title?: string) => {
-  return toast(message, { type: "info", title });
+toast.info = (message: string, title?: string, duration?: number) => {
+  return toast(message, { type: "info", title, duration: duration ?? 3000 });
 };
-
-export function dismissToast(id: string) {
-  toastsState = toastsState.filter((t) => t.id !== id);
-  notify();
-}
 
 export function ToastProvider() {
   const [toasts, setToasts] = React.useState<ToastItem[]>([]);
@@ -87,7 +99,7 @@ export function ToastProvider() {
       {toasts.map((t) => (
         <div
           key={t.id}
-          className="pointer-events-auto flex items-start gap-3 rounded-lg border border-slate-200/90 bg-white/98 px-3.5 py-3 text-slate-800 shadow-md backdrop-blur-xs transition-all duration-200 animate-in fade-in slide-in-from-bottom-2"
+          className="pointer-events-auto flex items-start gap-3 rounded-lg border border-slate-200/90 bg-white/98 px-3.5 py-2.5 text-slate-800 shadow-lg backdrop-blur-xs transition-all duration-200 animate-in fade-in slide-in-from-bottom-2"
         >
           <div className="shrink-0 mt-0.5">
             {t.type === "success" && (
@@ -131,4 +143,3 @@ export function ToastProvider() {
     </aside>
   );
 }
-
