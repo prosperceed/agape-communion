@@ -1,6 +1,6 @@
 # Agape Communion Church Website & Content Management Platform
 
-A production-ready church website and role-based content management system built for **Agape Communion Church** in Lagos, Nigeria.
+A production-ready church website and role-based content management system built for **Agape Communion Church** in Plateau, Nigeria.
 
 ---
 
